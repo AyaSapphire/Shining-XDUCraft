@@ -19,8 +19,94 @@
   font-family: "SimSun", "Palatino Linotype";
   /* 中文字体为宋体，西文字体为Palatino Linotype */
 }
+    /* 添加过渡效果的样式 */
+    .fullscreen-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+    
+    .fullscreen-img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+    }
 
       </style>
+       <script>
+     function enlargeImage(imgSrc) {
+        const fullscreenContainer = document.createElement('div');
+        fullscreenContainer.className = 'fullscreen-container';
+
+        const fullscreenImg = document.createElement('img');
+        fullscreenContainer.appendChild(fullscreenImg);
+        document.body.appendChild(fullscreenContainer);
+
+        fullscreenImg.onload = function() {
+            fullscreenContainer.style.opacity = '1';
+            fullscreenContainer.style.pointerEvents = 'auto';
+            fullscreenImg.style.transform = 'scale(1)';
+        };
+
+        fullscreenImg.src = imgSrc;
+
+        // 处理点击关闭
+        fullscreenContainer.addEventListener('click', function() {
+            fullscreenImg.style.transform = 'scale(0.9)';
+            fullscreenContainer.style.opacity = '0';
+            
+            setTimeout(() => {
+                document.body.removeChild(fullscreenContainer);
+            }, 300);
+        });
+
+        // 处理滑动关闭
+        let startX = 0;
+        let moveX = 0;
+        let isSliding = false;
+
+        fullscreenImg.addEventListener('touchstart', function(e) {
+            startX = e.touches[0].clientX;
+            isSliding = true;
+        });
+
+        fullscreenImg.addEventListener('touchmove', function(e) {
+            if (isSliding) {
+                moveX = e.touches[0].clientX - startX;
+                const translateX = Math.max(Math.min(moveX / 10, 50), -50);
+                fullscreenImg.style.transform = `scale(0.9) translateX(${translateX}px)`;
+            }
+        });
+
+        fullscreenImg.addEventListener('touchend', function() {
+            if (isSliding) {
+                if (Math.abs(moveX) > 50) {
+                    fullscreenImg.style.transform = 'scale(0.9) translateX(100vw)';
+                    fullscreenContainer.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        document.body.removeChild(fullscreenContainer);
+                    }, 300);
+                } else {
+                    fullscreenImg.style.transform = 'scale(1)';
+                }
+                isSliding = false;
+            }
+        });
+    }
+    </script>
       <!-- The content below will be included at the end of the <head> element. --><script type="text/javascript">
   document.addEventListener("DOMContentLoaded", function () {
     // your code here
@@ -31,7 +117,7 @@
       <div class="crossnote markdown-preview  ">
       
 <p>标题：<strong>西安电子科技大学Minecraft社群/XDUcraft</strong><br>
-封面图：<img src="./logo.png" alt="封面图"></p>
+封面图：<img src="./logo.png" alt="封面图" onclick="enlargeImage(this.src)" style="cursor: pointer;"></p>
 <h1 id="简介">简介 </h1>
 <p>西安电子科技大学Minecraft社群（XDUcraft）是西电最大的Minecraft社群，也是西电Shining动漫社下的Minecraft组。自2021年9月12日正式成立以来，XDUcraft始终致力于为西电学子构建一个和谐而进步的Minecraft社区。</p>
 <p>依托西安电子科技大学的信息学科优势，结合Minecraft固有的创造性与教育性，XDUcraft在社团活动中注重寓教于乐，为成员提供优质的游戏体验和创新平台。目前社群规模已突破1100人，其中活跃成员保持在100人左右，展现出蓬勃的发展态势。</p>
@@ -41,16 +127,16 @@
 <p>目前XDUCraft建立了一系列服务器，各具特色：</p>
 <p><strong>服务器大厅 (Lobby)</strong>：作为进入其他服务器的门户，这里还可以欣赏到西电南校区的虚拟风景。<br>
 <strong>原版生存服 (SMP, Survival Multi-Player)</strong>：原版服，同时也是生电服，长期开放，欢迎各位建筑师和生存玩家大显身手！<br>
-<img src="./Chrismas.webp" alt="生存服圣诞节合影"> <img src="./1.png" alt="建筑例"><br>
+<img src="./Chrismas.webp" alt="生存服圣诞节合影" onclick="enlargeImage(this.src)" style="cursor: pointer;"> <img src="./1.png" alt="建筑例" onclick="enlargeImage(this.src)" style="cursor: pointer;"><br>
 <strong>创造服 (Creative)</strong>: 原版创造服，提供无限创造空间，只要不破坏服务器，一切皆有可能。<br>
 <strong>小游戏服 (Game)</strong>: 不定期开放，这里会举办各种有趣的游戏竞技活动，例如“Bingo”、“谁是杀手”、“跑酷挑战”和“方块躲猫猫”等。不论是PVP大佬还是小白，都欢迎前来游玩。<br>
-<img src="./Game.png" alt="小游戏服"><br>
+<img src="./Game.png" alt="小游戏服" onclick="enlargeImage(this.src)" style="cursor: pointer;"><br>
 <strong>模组服</strong>：定期投票开放。在这里，你将有机会玩到最新、最热门的整合包，充分体会MC模组社区的乐趣。</p>
 <p>以上服务器均为Java版本，基岩版将根据需求不定期开放。</p>
 <p>入服相关事宜请参阅<a href="#%E7%9B%B8%E5%85%B3%E9%93%BE%E6%8E%A5">相关链接</a>加群了解。</p>
 <h1 id="复原工程">复原工程 </h1>
 <p>西电校园的复原工程始于2018年，已有前辈建成较为完善的<a href="https://www.bilibili.com/video/BV18s41137r3">初步复原</a>。目前，这张地图作为服务器大厅的一部分，供玩家欣赏。<br>
-<img src="./%E5%A4%8D%E5%8E%9F3-10.png" alt="初代复原工程"><br>
+<img src="./%E5%A4%8D%E5%8E%9F3-10.png" alt="初代复原工程" onclick="enlargeImage(this.src)" style="cursor: pointer;"><br>
 然而，一方面，这张地图的复原版本为Java 1.7.10，版本过于久远；另一方面，学校部分建筑也已发生变迁，新的建筑亟待复原。为此，复原工程2.0——“你的西电”随之开启。</p>
 <p>此复原工程目前正处于建造阶段，工地也位于服务器大厅，欢迎各位建筑师加入，为复原工程贡献自己的一份力量。</p>
 <h1 id="相关链接">相关链接 </h1>
